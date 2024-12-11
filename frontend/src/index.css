@@ -1,0 +1,43 @@
+/* Глобальный стиль для всего приложения */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Roboto', sans-serif;
+    background: linear-gradient(to bottom right, #e0f7fa, #80deea);
+    /* background: linear-gradient(to bottom right, #b2ebf2, #4dd0e1); */
+    min-height: 100vh;
+  }
+  
+  #root {
+    /* display: flex; */
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+  }
+  
+  .container {
+    width: 100%;
+    max-width: 1200px;
+    padding: 20px;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    color: #00796b;
+  }
+  
+  .MuiPaper-root {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(10px);
+    border-radius: 15px;
+    padding: 20px;
+  }
+  
+  button.MuiButton-containedPrimary {
+    background: #004d40;
+    color: white;
+  }
+  
+  button.MuiButton-containedPrimary:hover {
+    background: #00695c;
+  }
+  

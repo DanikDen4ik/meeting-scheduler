@@ -1,0 +1,57 @@
+{
+  "name": "meeting-scheduler",
+  "version": "1.0.0",
+  "description": "Система управления расписанием и бронированием встреч",
+  "private": true,
+  "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
+    "@mui/material": "^6.1.10",
+    "@tanstack/react-query": "^5.62.3",
+    "axios": "^1.7.9",
+    "cors": "^2.8.5",
+    "cra-template": "1.2.0",
+    "date-fns": "^4.1.0",
+    "dayjs": "^1.11.13",
+    "express": "^4.21.2",
+    "formik": "^2.4.6",
+    "mobx": "^6.13.5",
+    "mobx-react-lite": "^4.0.7",
+    "nodemon": "^3.1.7",
+    "react": "^18.3.1",
+    "react-big-calendar": "^1.16.3",
+    "react-calendar": "^5.1.0",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^7.0.2",
+    "react-scripts": "5.0.1",
+    "web-vitals": "^4.2.4",
+    "yup": "^1.5.0"
+  },
+  "scripts": {
+    "start": "node backend/server.js",
+    "server": "nodemon backend/server.js",
+    "client": "npm start --prefix frontend",
+    "dev": "concurrently \"npm run server\" \"npm run client\""
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.0"
+  }
+}
