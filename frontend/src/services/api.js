@@ -1,38 +1,27 @@
 import axios from 'axios';
 
-const api = axios.create({
-  baseURL: 'http://localhost:5000',
-});
+const API_URL = 'http://localhost:5000';
 
-// Получение встреч с сервера
-export const fetchBookings = async () => {
-  try {
-    const response = await api.get('/bookings');
-    return response.data; // Возвращаем массив встреч
-  } catch (error) {
-    console.error('Ошибка загрузки встреч:', error);
-    throw error;
-  }
+// Создание встречи
+export const createBooking = async (booking) => {
+  const response = await axios.post(`${API_URL}/bookings`, booking);
+  return response.data;
 };
 
-// Создание новой встречи
-export const createBooking = async (data) => {
-  try {
-    const response = await api.post('/bookings', data);
-    return response.data;
-  } catch (error) {
-    console.error('Ошибка при создании встречи (API):', error);
-    throw error;
-  }
-};
-
-// Обновление встречи (PUT)
+// Обновление встречи
 export const updateBooking = async (id, booking) => {
-  const response = await axios.put(`/bookings/${id}`, booking);
+  const response = await axios.put(`${API_URL}/bookings/${id}`, booking);
   return response.data;
 };
 
 // Удаление встречи
 export const deleteBooking = async (id) => {
-  await api.delete(`/bookings/${id}`);
+  const response = await axios.delete(`${API_URL}/bookings/${id}`);
+  return response.data;
+};
+
+// Получение всех встреч
+export const fetchBookings = async () => {
+  const response = await axios.get(`${API_URL}/bookings`);
+  return response.data;
 };

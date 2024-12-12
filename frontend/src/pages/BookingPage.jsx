@@ -12,11 +12,16 @@ import {
   Paper,
 } from '@mui/material';
 
+// Форматирование даты
+const formatDateTimeLocal = (date) => {
+  return new Date(date).toISOString().slice(0, 16);
+};
+
 const BookingPage = observer(() => {
   const [title, setTitle] = useState('');
   const [startDateTime, setStartDateTime] = useState('');
   const [endDateTime, setEndDateTime] = useState('');
-  const { scheduleStore } = useStores();
+  const { scheduleStore, userStore } = useStores(); // Подключаем userStore
 
   const handleCreate = async () => {
     if (!title || !startDateTime || !endDateTime) {
@@ -24,8 +29,8 @@ const BookingPage = observer(() => {
       return;
     }
 
-    const start = new Date(startDateTime).toISOString();
-    const end = new Date(endDateTime).toISOString();
+    const start = formatDateTimeLocal(startDateTime);
+    const end = formatDateTimeLocal(endDateTime);
 
     if (new Date(start) >= new Date(end)) {
       alert('Дата и время начала должны быть раньше даты и времени окончания!');
@@ -37,11 +42,12 @@ const BookingPage = observer(() => {
         title,
         start,
         end,
+        createdBy: userStore.user?.username || 'Неизвестно', // Привязка к пользователю
       });
 
       scheduleStore.addBooking(newBooking);
 
-      alert(`Встреча успешно создана до ${new Date(end).toLocaleString()}`);
+      alert(`Встреча успешно создана пользователем ${newBooking.createdBy}`);
 
       // Очистка полей
       setTitle('');
@@ -61,6 +67,7 @@ const BookingPage = observer(() => {
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
+          minHeight: 'calc(100vh - 64px)', // Учитываем высоту меню
         }}
       >
         <Paper
@@ -126,4 +133,3 @@ const BookingPage = observer(() => {
 });
 
 export default BookingPage;
-  

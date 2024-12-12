@@ -14,10 +14,20 @@ class UserStore {
     }
   }
 
+  // Список пользователей с логинами и паролями
+  users = [
+    { username: 'admin', password: 'admin' },
+    { username: 'user', password: 'user' },
+  ];
+
+  // Функция входа
   login(username, password) {
-    // Проверка логина и пароля
-    if (username === 'admin' && password === 'admin') {
-      this.user = { username };
+    const foundUser = this.users.find(
+      (u) => u.username === username && u.password === password
+    );
+
+    if (foundUser) {
+      this.user = { username: foundUser.username };
       this.error = null; // Сбрасываем ошибку
       localStorage.setItem('user', JSON.stringify(this.user)); // Сохраняем пользователя
     } else {
@@ -25,6 +35,7 @@ class UserStore {
     }
   }
 
+  // Функция выхода
   logout() {
     this.user = null;
     this.error = null; // Сбрасываем ошибку
