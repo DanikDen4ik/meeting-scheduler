@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { observer } from 'mobx-react-lite';
 import useStores from '../hooks/useStores';
-import { fetchBookings, updateBooking, deleteBooking } from '../services/api';
+import { fetchBookings, deleteBooking, updateBooking } from '../services/api';
 import {
   Container,
   Typography,
@@ -13,9 +13,11 @@ import {
   Modal,
   Box,
   TextField,
+  MenuItem,
 } from '@mui/material';
 import NavBar from '../components/NavBar';
 
+// Функция форматирования даты
 const formatDateTimeLocal = (date) => {
   const localDate = new Date(date);
   const offset = localDate.getTimezoneOffset() * 60000; // Смещение часового пояса
@@ -23,9 +25,13 @@ const formatDateTimeLocal = (date) => {
 };
 
 const SchedulePage = observer(() => {
-  const { scheduleStore } = useStores();
+  const { scheduleStore, userStore } = useStores();
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [editedBooking, setEditedBooking] = useState(null);
+
+  // Фильтры
+  const [filterDate, setFilterDate] = useState('');
+  const [filterCreatedBy, setFilterCreatedBy] = useState('');
 
   // Загрузка встреч при монтировании компонента
   useEffect(() => {
@@ -39,6 +45,17 @@ const SchedulePage = observer(() => {
     };
     loadBookings();
   }, [scheduleStore]);
+
+  // Фильтрация встреч
+  const filteredBookings = scheduleStore.bookings.filter((booking) => {
+    const isDateMatch =
+      filterDate === '' || booking.start.slice(0, 10) === filterDate;
+    const isCreatorMatch =
+      userStore.user?.username === 'admin'
+        ? filterCreatedBy === '' || booking.createdBy === filterCreatedBy
+        : booking.createdBy === userStore.user?.username;
+    return isDateMatch && isCreatorMatch;
+  });
 
   // Открытие модального окна
   const handleEdit = (booking) => {
@@ -56,7 +73,7 @@ const SchedulePage = observer(() => {
     setEditedBooking(null);
   };
 
-  // Обновление данных встречи
+  // Обновление встречи
   const handleUpdate = async () => {
     try {
       const updatedBooking = await updateBooking(
@@ -70,19 +87,20 @@ const SchedulePage = observer(() => {
     }
   };
 
-  // Удаление встречи
-  const handleDelete = async (id) => {
-    const confirmed = window.confirm('Вы уверены, что хотите удалить встречу?');
-    if (!confirmed) return;
+// Удаление встречи с подтверждением
+const handleDelete = async (id) => {
+  const confirmed = window.confirm('Вы уверены, что хотите удалить встречу?');
+  if (!confirmed) return;
 
-    try {
-      await deleteBooking(id);
-      scheduleStore.removeBooking(id); // Обновляем состояние после удаления
-          } catch (error) {
-      console.error('Ошибка при удалении встречи:', error);
-      alert('Ошибка при удалении встречи');
-    }
-  };
+  try {
+    await deleteBooking(id);
+    scheduleStore.removeBooking(id); // Обновляем состояние после удаления
+    alert('Встреча успешно удалена');
+  } catch (error) {
+    console.error('Ошибка при удалении встречи:', error);
+    alert('Ошибка при удалении встречи');
+  }
+};
 
   return (
     <>
@@ -92,13 +110,60 @@ const SchedulePage = observer(() => {
           Список встреч
         </Typography>
 
-        {scheduleStore.bookings.length === 0 ? (
+        {/* Фильтры */}
+        <Box
+  sx={{
+    display: 'flex',
+    gap: 2,
+    marginBottom: 3,
+    justifyContent: 'center',
+  }}
+>
+  {/* Поле Дата */}
+  <TextField
+    type="date"
+    label="Дата события"
+    variant="outlined"
+    value={filterDate}
+    onChange={(e) => setFilterDate(e.target.value)}
+    InputLabelProps={{
+      shrink: true, // Перемещает метку вверх
+    }}
+  />
+
+  {/* Поле Кем создано (только для admin) */}
+  {userStore.user?.username === 'admin' && (
+    <TextField
+      select
+      label="Кем создано"
+      variant="outlined"
+      value={filterCreatedBy}
+      onChange={(e) => setFilterCreatedBy(e.target.value)}
+      sx={{ minWidth: 200 }}
+      InputLabelProps={{
+        shrink: true, // Перемещает метку вверх
+      }}
+    >
+      <MenuItem value="">Все</MenuItem>
+      {[...new Set(scheduleStore.bookings.map((b) => b.createdBy))].map(
+        (creator) => (
+          <MenuItem key={creator} value={creator}>
+            {creator}
+          </MenuItem>
+        )
+      )}
+    </TextField>
+  )}
+</Box>
+
+
+        {filteredBookings.length === 0 ? (
           <Typography align="center" color="text.secondary">
             Встречи отсутствуют
           </Typography>
         ) : (
           <Grid container spacing={3}>
-            {scheduleStore.bookings.map((booking) => (
+            {filteredBookings.map((booking) => (
               <Grid item xs={12} sm={6} md={4} key={booking.id}>
                 <Card>
                   <CardContent>
@@ -111,6 +176,11 @@ const SchedulePage = observer(() => {
                       <strong>Окончание:</strong>{' '}
                       {new Date(booking.end).toLocaleString('ru-RU')}
                     </Typography>
+                    {userStore.user?.username === 'admin' && (
+                      <Typography color="text.secondary">
+                        <strong>Кем создано:</strong> {booking.createdBy}
+                      </Typography>
+                    )}
                   </CardContent>
                   <CardActions>
                     <Button

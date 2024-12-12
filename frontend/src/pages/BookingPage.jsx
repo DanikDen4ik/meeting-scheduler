@@ -47,7 +47,7 @@ const BookingPage = observer(() => {
 
       scheduleStore.addBooking(newBooking);
 
-      alert(`Встреча успешно создана пользователем ${newBooking.createdBy}`);
+      alert(`Встреча успешно создана!`);
 
       // Очистка полей
       setTitle('');

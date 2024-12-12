@@ -13,7 +13,7 @@ cd meeting-scheduler
 ```
 npm install
 ```
-- Запуск
+- Запуск в режиме разработчика
 ```
 nmp run dev
 ```
