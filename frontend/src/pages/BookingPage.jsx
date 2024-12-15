@@ -67,7 +67,7 @@ const BookingPage = observer(() => {
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
-          minHeight: 'calc(100vh - 64px)', // Учитываем высоту меню
+          // minHeight: 'calc(100vh - 64px)', // Учитываем высоту меню
         }}
       >
         <Paper
