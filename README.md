@@ -17,3 +17,11 @@ npm install
 ```
 npm run dev
 ```
+
+## Учетные записи
+admin/admin
+user/user
+
+## URL
+frontend - http://localhost:3000/
+backend - http://localhost:5000/bookings
